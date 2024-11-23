@@ -15,7 +15,7 @@ function App() {
   return (
     <StudioProvider>
       <Router>
-        <Box>
+        <Box component="main" sx={{ minHeight: '100vh' }}>
           <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />
