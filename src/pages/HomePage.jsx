@@ -118,6 +118,7 @@ const HomePage = () => {
                     component="img"
                     image={studio.images?.[0] || "https://via.placeholder.com/300x300"}
                     alt={studio.name}
+                    loading="lazy"
                     sx={{
                       position: 'absolute',
                       top: 0,

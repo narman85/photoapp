@@ -193,7 +193,6 @@ export const StudioProvider = ({ children }) => {
     }
   };
 
-  // İlk yükləmədə studioları al
   useEffect(() => {
     fetchStudios();
   }, []);
