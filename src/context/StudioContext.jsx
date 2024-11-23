@@ -175,11 +175,14 @@ export const StudioProvider = ({ children }) => {
           canvas.width = width;
           canvas.height = height;
           
+          // Şəkili təmiz çək
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
           
           // Convert to file
           canvas.toBlob((blob) => {
-            const optimizedFile = new File([blob], file.name, {
+            const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
               type: 'image/jpeg',
               lastModified: Date.now(),
             });
@@ -207,9 +210,12 @@ export const StudioProvider = ({ children }) => {
         throw new Error('Fayl ölçüsü 5MB-dan çox olmamalıdır');
       }
 
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Yalnız JPG və PNG faylları dəstəklənir');
+      // HEIC/HEIF və digər formatları yoxla
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/heic', 'image/heif'];
+      const isHeic = file.type.includes('heic') || file.type.includes('heif');
+      
+      if (!allowedTypes.includes(file.type) && !isHeic) {
+        throw new Error('Yalnız JPG, PNG və HEIC faylları dəstəklənir');
       }
 
       // Şəkili compress et
