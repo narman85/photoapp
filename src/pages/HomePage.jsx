@@ -144,7 +144,7 @@ const HomePage = () => {
                       display: 'block'
                     }}
                   >
-                    {studio.price} AZN
+                    {studio.contact?.instagram}
                   </Typography>
                 </CardContent>
               </CardActionArea>
