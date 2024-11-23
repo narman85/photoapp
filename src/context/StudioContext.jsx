@@ -140,6 +140,56 @@ export const StudioProvider = ({ children }) => {
     return studios.find(studio => studio.id === parseInt(id));
   };
 
+  // Şəkili client-side compress et
+  const compressImage = async (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Maximum ölçülər
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          
+          let width = img.width;
+          let height = img.height;
+          
+          // Aspect ratio qoru
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to file
+          canvas.toBlob((blob) => {
+            const optimizedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve(optimizedFile);
+          }, 'image/jpeg', 0.8); // 80% keyfiyyət
+        };
+      };
+    });
+  };
+
   // Şəkil yüklə
   const uploadImage = async (file) => {
     try {
@@ -162,13 +212,16 @@ export const StudioProvider = ({ children }) => {
         throw new Error('Yalnız JPG və PNG faylları dəstəklənir');
       }
 
-      const fileExt = file.name.split('.').pop();
+      // Şəkili compress et
+      const compressedFile = await compressImage(file);
+      
+      const fileExt = 'jpg'; // həmişə JPG format
       const fileName = `${session.user.id}_${Date.now()}.${fileExt}`;
       const filePath = `public/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('studio-images')
-        .upload(filePath, file, {
+        .upload(filePath, compressedFile, {
           cacheControl: '3600',
           upsert: false
         });
