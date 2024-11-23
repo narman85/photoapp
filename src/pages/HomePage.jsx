@@ -21,6 +21,18 @@ const HomePage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Studiolari ümumi baxış sayına görə sırala
+  const sortedStudios = [...studios].sort((a, b) => {
+    const getTotalViews = (studio) => (
+      (studio.stats?.views || 0) + 
+      (studio.stats?.phoneViews || 0) + 
+      (studio.stats?.addressViews || 0) + 
+      (studio.stats?.instagramViews || 0) +
+      (studio.stats?.whatsappViews || 0)
+    );
+    return getTotalViews(b) - getTotalViews(a);
+  });
+
   // Studio kartına klik ediləndə
   const handleStudioClick = (studioId) => {
     // Baxış sayını artır
@@ -73,7 +85,7 @@ const HomePage = () => {
       }}
     >
       <Grid container spacing={isMobile ? 1 : 2}>
-        {studios.map((studio) => (
+        {sortedStudios.map((studio) => (
           <Grid item xs={6} sm={4} md={3} lg={2} key={studio.id}>
             <Card 
               sx={{ 

@@ -24,7 +24,8 @@ import {
   Card,
   CardContent,
   Stack,
-  Divider
+  Divider,
+  Grid
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -135,49 +136,173 @@ const AdminDashboard = () => {
       {sortedStudios.map((studio) => (
         <Card key={studio.id} sx={{ width: '100%' }}>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {studio.name}
-            </Typography>
-            
-            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <ViewIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
-                <Typography variant="body2">
-                  {studio.stats?.views || 0}
-                </Typography>
+            {/* Studio adı */}
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              mb: 2
+            }}>
+              <Typography variant="h6">
+                {studio.name}
+              </Typography>
+              <Box>
+                <IconButton 
+                  size="small"
+                  onClick={() => navigate(`/admin/studio/edit/${studio.id}`)}
+                  color="primary"
+                  sx={{ mr: 1 }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton 
+                  size="small"
+                  onClick={() => handleDeleteClick(studio)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <PhoneIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
-                <Typography variant="body2">
-                  {studio.stats?.phoneViews || 0}
-                </Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <InstagramIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
-                <Typography variant="body2">
-                  {studio.stats?.instagramViews || 0}
-                </Typography>
-              </Box>
-            </Stack>
+            </Box>
 
-            <Divider sx={{ my: 1 }} />
-            
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <IconButton 
-                size="small"
-                onClick={() => navigate(`/admin/studio/edit/${studio.id}`)}
-                color="primary"
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton 
-                size="small"
-                onClick={() => handleDeleteClick(studio)}
-                color="error"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Stack>
+            {/* Ümumi statistika */}
+            <Box sx={{ 
+              bgcolor: 'primary.main',
+              color: 'white',
+              p: 1.5,
+              borderRadius: 1,
+              mb: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <ViewIcon sx={{ mr: 1 }} />
+              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                {(studio.stats?.views || 0) + 
+                 (studio.stats?.phoneViews || 0) + 
+                 (studio.stats?.addressViews || 0) + 
+                 (studio.stats?.instagramViews || 0) +
+                 (studio.stats?.whatsappViews || 0)}
+              </Typography>
+            </Box>
+
+            {/* Detallı statistikalar */}
+            <Grid container spacing={1.5}>
+              <Grid item xs={6}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 1.5, 
+                    bgcolor: 'grey.50',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 1
+                  }}
+                >
+                  <ViewIcon sx={{ color: 'primary.main', mb: 0.5 }} />
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Kart
+                  </Typography>
+                  <Typography variant="h6">
+                    {studio.stats?.views || 0}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 1.5, 
+                    bgcolor: 'grey.50',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 1
+                  }}
+                >
+                  <PhoneIcon sx={{ color: 'primary.main', mb: 0.5 }} />
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Telefon
+                  </Typography>
+                  <Typography variant="h6">
+                    {studio.stats?.phoneViews || 0}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 1.5, 
+                    bgcolor: 'grey.50',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 1
+                  }}
+                >
+                  <LocationIcon sx={{ color: 'primary.main', mb: 0.5 }} />
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Ünvan
+                  </Typography>
+                  <Typography variant="h6">
+                    {studio.stats?.addressViews || 0}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 1.5, 
+                    bgcolor: 'grey.50',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 1
+                  }}
+                >
+                  <InstagramIcon sx={{ color: 'primary.main', mb: 0.5 }} />
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Instagram
+                  </Typography>
+                  <Typography variant="h6">
+                    {studio.stats?.instagramViews || 0}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 1.5, 
+                    bgcolor: 'grey.50',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRadius: 1
+                  }}
+                >
+                  <WhatsAppIcon sx={{ color: 'primary.main', mb: 0.5 }} />
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    WhatsApp
+                  </Typography>
+                  <Typography variant="h6">
+                    {studio.stats?.whatsappViews || 0}
+                  </Typography>
+                </Paper>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       ))}
