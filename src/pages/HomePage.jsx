@@ -8,7 +8,9 @@ import {
   Typography,
   Box,
   CardActionArea,
-  CircularProgress
+  CircularProgress,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useStudio } from '../context/StudioContext';
@@ -16,6 +18,8 @@ import { useStudio } from '../context/StudioContext';
 const HomePage = () => {
   const navigate = useNavigate();
   const { studios, loading, error, updateStats } = useStudio();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Studio kartına klik ediləndə
   const handleStudioClick = (studioId) => {
@@ -34,7 +38,12 @@ const HomePage = () => {
   // Yükləmə zamanı
   if (loading) {
     return (
-      <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <Container sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        minHeight: '80vh'
+      }}>
         <CircularProgress />
       </Container>
     );
@@ -43,7 +52,10 @@ const HomePage = () => {
   // Xəta baş verərsə
   if (error) {
     return (
-      <Container sx={{ mt: 4 }}>
+      <Container sx={{ 
+        mt: 4,
+        px: isMobile ? 2 : 3 
+      }}>
         <Typography color="error">
           Xəta baş verdi: {error}
         </Typography>
@@ -52,10 +64,17 @@ const HomePage = () => {
   }
 
   return (
-    <Container sx={{ mt: 2, mb: 2 }}>
-      <Grid container spacing={1}>
+    <Container 
+      maxWidth="xl" 
+      sx={{ 
+        mt: isMobile ? 1 : 2, 
+        mb: 2,
+        px: isMobile ? 1 : 3
+      }}
+    >
+      <Grid container spacing={isMobile ? 1 : 2}>
         {studios.map((studio) => (
-          <Grid item xs={5} sm={3} md={2} key={studio.id}>
+          <Grid item xs={6} sm={4} md={3} lg={2} key={studio.id}>
             <Card 
               sx={{ 
                 height: '100%',
@@ -63,20 +82,23 @@ const HomePage = () => {
                 display: 'flex', 
                 flexDirection: 'column',
                 transition: 'transform 0.2s',
-                borderRadius: 1,
+                borderRadius: isMobile ? 1 : 2,
                 boxShadow: 'none',
                 border: '1px solid',
                 borderColor: 'grey.200',
                 '&:hover': {
-                  transform: 'scale(1.02)',
+                  transform: isMobile ? 'none' : 'scale(1.02)',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                },
+                '&:active': {
+                  transform: isMobile ? 'scale(0.98)' : 'none',
                 }
               }}
             >
               <CardActionArea onClick={() => handleStudioClick(studio.id)}>
                 <Box sx={{ 
                   position: 'relative',
-                  paddingTop: '90%', // biraz daha az kvadrat
+                  paddingTop: isMobile ? '100%' : '90%',
                   overflow: 'hidden',
                   bgcolor: 'grey.100'
                 }}>
@@ -94,12 +116,35 @@ const HomePage = () => {
                     }}
                   />
                 </Box>
-                <CardContent sx={{ p: 0.8, textAlign: 'center' }}>
-                  <Typography variant="subtitle2" component="div" noWrap>
+                <CardContent 
+                  sx={{ 
+                    p: isMobile ? 1 : 1.5, 
+                    textAlign: 'left',
+                    '&:last-child': {
+                      pb: isMobile ? 1 : 1.5
+                    }
+                  }}
+                >
+                  <Typography 
+                    variant={isMobile ? "body2" : "subtitle1"} 
+                    component="div" 
+                    noWrap 
+                    sx={{ 
+                      fontWeight: 500,
+                      mb: 0.5
+                    }}
+                  >
                     {studio.name}
                   </Typography>
-                  <Typography variant="subtitle2" color="primary" noWrap>
-                    {studio.contact?.instagram}
+                  <Typography 
+                    variant={isMobile ? "caption" : "body2"} 
+                    color="primary" 
+                    sx={{ 
+                      fontWeight: 'medium',
+                      display: 'block'
+                    }}
+                  >
+                    {studio.price} AZN
                   </Typography>
                 </CardContent>
               </CardActionArea>
